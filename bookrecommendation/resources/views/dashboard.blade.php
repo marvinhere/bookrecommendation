@@ -232,7 +232,7 @@
 
              <div class="form-group">
                 <label for="exampleFormControlSelect1">Diseño cubierta</label>
-                <select multiple class="form-control" id="exampleFormControlSelect1" name="cover_design[]">
+                <select multiple class="form-control" id="exampleFormControlSelect1" name="cover_design[]" style="height: 400px;">
                   @isset($c_designs)
                   @foreach($c_designs as $design)
                     <option value="{{$design->id}}">{{$design->name}}</option>

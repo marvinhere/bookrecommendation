@@ -19,8 +19,8 @@ class Dashboard extends Controller
     //
     public function dashboard(){
     	$authors = authors::get();
-    	$c_designs = c_designs::get();
-    	$genres = genres::get();
+    	$c_designs = c_designs::orderBy('name')->get();
+    	$genres = genres::orderBy('genre')->get();
     	$publishers = publishers::get();
     	$data = [
     		'authors'=>$authors,
@@ -196,8 +196,8 @@ public function editBookProfile(Request $request,$id){
 
 
         $authors = authors::get();
-        $c_designs = c_designs::get();
-        $genres = genres::get();
+        $c_designs = c_designs::orderBy('name')->get();
+        $genres = genres::orderBy('genre')->get();
         $publishers = publishers::get();
 
          //recommendation only 4
@@ -206,7 +206,7 @@ public function editBookProfile(Request $request,$id){
             'data' => $id,
         ];
 
-        $response = Http::timeout(5)->get('http://127.0.0.1:5000/recommendation',$datarequest);
+        $response = Http::timeout(5)->get('http://127.0.0.1:5000/recommendation-summary',$datarequest);
         $res = $response->serverError();
         $resuccess = $response->successful();
         $booksrecom = null;
