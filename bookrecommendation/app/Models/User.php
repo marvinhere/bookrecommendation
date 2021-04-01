@@ -58,4 +58,9 @@ class User extends Authenticatable
     protected $appends = [
         'profile_photo_url',
     ];
+
+    public function interest()
+    {
+        return $this->belongsToMany(books::class,'interests','user_id','book_id');
+    }
 }

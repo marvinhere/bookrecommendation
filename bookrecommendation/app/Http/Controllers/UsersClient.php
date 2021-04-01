@@ -32,10 +32,12 @@ class UsersClient extends Controller
         //recommendation only 4
         $datarequest = [
             'apikey' => 'abcd',
-            'data' => '8'
+            'data' => '8',
+            'k' =>'5'
         ];
 
-        $response = Http::timeout(5)->get('http://127.0.0.1:5000/recommendation-summary',$datarequest);
+        $response = Http::timeout(5)->get('http://127.0.0.1:5000/recommendation',$datarequest);
+        //return $response;
         $res = $response->serverError();
         $resuccess = $response->successful();
         $booksrecom = null;
@@ -149,5 +151,20 @@ class UsersClient extends Controller
         }
         return $booksrecom;
     }
+
+    public function genreSearch($id){
+        $books = genres::find($id)
+        ->books()
+        //->join('business','posts.business_id','=','business.user_id')
+        ->simplePaginate(5);
+        $genre = genres::find($id);
+        $data = [
+            'books'=>$books,
+            'genre'=>$genre->genre
+        ];
+
+        return view('genre')->with($data);
+    }
+    
 
 }

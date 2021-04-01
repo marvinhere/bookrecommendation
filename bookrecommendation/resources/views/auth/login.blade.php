@@ -1,10 +1,38 @@
-<x-guest-layout>
-    <x-jet-authentication-card>
-        <x-slot name="logo">
-            <x-jet-authentication-card-logo />
-        </x-slot>
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Wruczek/Bootstrap-Cookie-Alert@gh-pages/cookiealert.css">
+  <script src="https://cdn.jsdelivr.net/gh/Wruczek/Bootstrap-Cookie-Alert@gh-pages/cookiealert.js"></script>
+<style type="text/css">
+    .bold{
+        font-weight: bold;
+    }
 
-        <x-jet-validation-errors class="mb-4" />
+    .big{
+        font-size: 26px;
+    }
+
+    .cardForm{
+        width: 400px;
+        box-shadow: 0px 5px 10px #E3E3E3;
+        padding: 50px;
+        border-radius: 15px
+    }
+</style>
+</head>
+<body>
+    <div class="container text-center mt-5">
+        <h1 class="bold big">Relibro</h1>
+    </div>
+    <div class="container text-center mt-5">
+        <div class="container cardForm mt-5">
+            <x-jet-validation-errors class="mb-4" />
 
         @if (session('status'))
             <div class="mb-4 font-medium text-sm text-green-600">
@@ -12,17 +40,17 @@
             </div>
         @endif
 
-        <form method="POST" action="{{ route('login') }}">
+        <form method="POST" action="{{ route('login') }}" class="text-left">
             @csrf
 
-            <div>
-                <x-jet-label for="email" value="{{ __('Email') }}" />
-                <x-jet-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus />
+            <div class="form-group">
+                <label>Email</label>
+                <input id="email" class="form-control" type="email" name="email" placeholder="Email" required autofocus />
             </div>
 
-            <div class="mt-4">
-                <x-jet-label for="password" value="{{ __('Password') }}" />
-                <x-jet-input id="password" class="block mt-1 w-full" type="password" name="password" required autocomplete="current-password" />
+            <div class="mt-4 form-group">
+                <label>Contraseña</label>
+                <input id="password" class="form-control" type="password" name="password" required placeholder="Password" />
             </div>
 
             <div class="block mt-4">
@@ -39,10 +67,16 @@
                     </a>
                 @endif
 
-                <x-jet-button class="ml-4">
-                    {{ __('Login') }}
-                </x-jet-button>
+                <div class="container text-center mb-4">
+                    <button class="btn btn-primary d-block mt-5" style="width: 100%;">
+                    {{ __('Entrar') }}
+                </button><br>
+                <a href="/register">Registro</a>
+                </div>
+                
             </div>
         </form>
-    </x-jet-authentication-card>
-</x-guest-layout>
+        </div>
+    </div>
+</body>
+</html>

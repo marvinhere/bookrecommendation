@@ -23,4 +23,6 @@ class books extends Model
     {
         return $this->belongsToMany(c_designs::class,'book_covers','book_id','design_id');
     }
+
+    
 }

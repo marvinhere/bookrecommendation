@@ -100,16 +100,29 @@ a[data-toggle="collapse"] {
   <strong>
     ReLibro
   </strong>
+
 </a>
 
 
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
-    <div class="navbar-nav mr-auto"></div>
+    <div class="navbar-nav mr-auto">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item {{ Route::currentRouteName() == 'home' ? 'active' : '' }}">
+                <a class="nav-link" href="/home">Home</a>
+            </li>
+            <li class="nav-item {{ Route::currentRouteName() == 'library' ? 'active' : '' }}">
+                <a class="nav-link" href="/library">Mi Biblioteca</a>
+            </li>
+        </ul>
+    </div>
+    
+
     <form class="form-inline my-2 my-lg-0" action="{{route('search')}}" method="get">
           @csrf
-        <input class="form-control mr-sm-2" type="text" placeholder="Search" name="data" style="width: 300px;">
-      <button class="btn btn-outline-dark my-2 my-sm-0" type="submit">Search</button>
+        <input class="form-control mr-sm-2" type="text" placeholder="Buscar" name="data" style="width: 300px;">
+      <button class="btn btn-outline-dark my-2 my-sm-0" type="submit">Buscar</button>
     </form>
+    <a class="ml-5" href="/user/profile" style="font-weight: bold;">{{Auth::user()->name}}!</a>
   </div>
 </nav>
 <div class="wrapper">
@@ -123,17 +136,17 @@ a[data-toggle="collapse"] {
         <ul class="list-unstyled components">
             <p style="font-size: 20px;"><strong>Tus opciones</strong></p>
 
-            <li class="active">
-                <a href="#">Home</a>
+            <li class="{{Request::is('home') ? 'active' : '' }} {{Request::is('principal') ? 'active' : '' }}">
+                <a href="/">Home</a>
             </li>
-            <li>
-                <a href="#">Romance</a>
+            <li class="{{Request::is('genres/1') ? 'active' : '' }}">
+                <a href="/genres/1">Aventuras</a>
             </li>
-            <li>
-                <a href="#">Comedia</a>
+            <li class="{{Request::is('genres/2') ? 'active' : '' }}">
+                <a href="/genres/2">Ficción</a>
             </li>
-            <li>
-                <a href="#">Emprendimiento</a>
+            <li class="{{Request::is('genres/3') ? 'active' : '' }}">
+                <a href="/genres/3">Ciencia Ficción</a>
             </li>
         </ul>
     </nav>

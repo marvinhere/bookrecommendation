@@ -12,13 +12,18 @@ use App\Models\books;
 use App\Models\c_designs;
 use App\Models\genres;
 use App\Models\publishers;
+use App\Models\User;
+use App\Models\interests;
+use Illuminate\Support\Facades\Auth;
+
 
 
 class Dashboard extends Controller
 {
     //
     public function dashboard(){
-    	$authors = authors::get();
+        $books = books::with("authors")->simplePaginate(20);
+        $authors = authors::get();
     	$c_designs = c_designs::orderBy('name')->get();
     	$genres = genres::orderBy('genre')->get();
     	$publishers = publishers::get();
@@ -26,7 +31,8 @@ class Dashboard extends Controller
     		'authors'=>$authors,
     		'c_designs'=>$c_designs,
     		'genres'=>$genres,
-    		'publishers'=>$publishers
+    		'publishers'=>$publishers,
+            'books'=>$books
     	];
     	return view('dashboard')->with($data);
     }
@@ -168,12 +174,13 @@ public function editBookProfile(Request $request,$id){
     }
 
 
-    public function editBook($id){
+    public function profileBook($id){
+        $user = Auth::user();
+
+        $interest = interests::where('user_id',$user->id)
+        ->where('book_id',$id)->first();
 
         $data = books::findOrFail($id);
-
-        
-
         $books = books::findOrFail($id);
         $author = $books->authors()->get();
         $cover = $books->covers()->get();
@@ -204,9 +211,10 @@ public function editBookProfile(Request $request,$id){
         $datarequest = [
             'apikey' => 'abcd',
             'data' => $id,
+            'k'=>'5'
         ];
 
-        $response = Http::timeout(5)->get('http://127.0.0.1:5000/recommendation-summary',$datarequest);
+        $response = Http::timeout(5)->get('http://127.0.0.1:5000/recommendation',$datarequest);
         $res = $response->serverError();
         $resuccess = $response->successful();
         $booksrecom = null;
@@ -225,7 +233,9 @@ public function editBookProfile(Request $request,$id){
             $recomIds= null;
             $i = 0;
             foreach ($data as $d) {
-                $recomIds[$i] = ((int)$d[0])+1;
+                //$recomIds[$i] = ((int)$d[0])+1;
+
+                $recomIds[$i] = ((int)$d[0]); //Ya no se le suma 1 porque los ids estan corregidos
                 $i++;
             }
 
@@ -251,7 +261,8 @@ public function editBookProfile(Request $request,$id){
             'genre'=>$selectedg,
             'cover'=>$selectedc,
             'author'=>$author,
-            'recoms'=>$booksrecom
+            'recoms'=>$booksrecom,
+            'interest'=>$interest
         ];
         return view('book_profile')->with($data);
 
@@ -264,5 +275,11 @@ public function editBookProfile(Request $request,$id){
         $books->covers()->detach();
         $books->delete();
         return redirect('dashboard')->with('status', 'Libro eliminado!');
+    }
+
+    ///este es test
+    public function getAllBooks(){
+        $books = books::with("authors")->first();
+        return $books;
     }
 }

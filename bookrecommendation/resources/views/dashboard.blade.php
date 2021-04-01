@@ -69,27 +69,31 @@
     </button>
     <div class="text-center mt-5">
 
-        <div class="d-inline-block" style="width: 18rem;">
-            <div class="container text-center">
-                <img class="bookcover rounded" src="{{url('/images/portada1.jpg')}}">  
-            </div>
-            <div class="container text-center mt-2">
-                <h4>Surviving the Abbys</h4>
-                <h5>Don Brown</h5>
-            </div>    
-        </div>
+        <table class="table font15">
+          <thead>
+            <tr>
+              <th scope="col">Nombre</th>
+              <th scope="col">Autor</th>
+              <th scope="col">ISBN</th>
+            </tr>
+          </thead>
+          <tbody>
+            @foreach($books as $book)
+            <tr>
+              <td><a href="{{route('book_profile',$book->id)}}">{{$book->title}}</a></td>
+              <td>
+                @foreach($book->authors as $author)
+                  {{$author->first_name}} {{$author->middle_name}} {{$author->last_name}}
+                @endforeach
+              </td>
+              <td>{{$book->isbn}}</td>
+            @endforeach
+            </tr>
+          </tbody>
+        </table>
 
-        <div class="d-inline-block" style="width: 18rem;">
-            <div class="container text-center">
-                <img class="bookcover rounded" src="{{url('/images/portada1.jpg')}}">  
-            </div>
-            <div class="container text-center mt-2">
-                <h4>Surviving the Abbys</h4>
-                <h5>Don Brown</h5>
-            </div>    
-        </div>
 
-
+        <div class="container font15">{{ $books->links() }}</div>
     </div>
 </div>
 

@@ -24,6 +24,8 @@
     </div>
   @endif
 
+
+@if(Auth::user()->type == 'admin')
 <div class="container mt-2">
     <button type="button" class="btn btn-primary mr-2 d-inline-block" data-toggle="modal" data-target="#exampleModal">
       Editar
@@ -37,7 +39,7 @@
     </form>
     
 </div>
-
+@endif
 <div class="container" style="margin-top: 100px;">
   <div class="row">
     <div class="col">
@@ -49,18 +51,20 @@
             <div class="col-sm text-left mt-5">
                 <h4>{{$books->title}}</h4>
                 <h5>{{$author[0]->first_name}} {{$author[0]->middle_name}} {{$author[0]->last_name}}</h5>
-                <div class="col">
-                  <div class="row mb-1">
-                    <img class="reaction mr-2" src="https://img.icons8.com/flat_round/64/000000/filled-like.png"/><a>7k</a>
-                  </div>
 
-                  <div class="row mb-1">
-                    <img class="reaction mr2" src="https://img.icons8.com/ios/50/000000/facebook-like--v1.png"/><a>1k</a>
-                  </div>
-                  <div class="row mb-1">
-                    <img class="reaction mr2" src="https://img.icons8.com/material-outlined/50/000000/thumbs-down.png"/><a>4</a>
-                  </div>
-                    
+                @if(!empty($interest) && $interest->count()>0)
+                <form action="{{route('remove_book',$books->id)}}" method="post">
+                  @csrf
+                <button class="btn btn-primary" style="width: 200px;">Guardado</button>
+                </form>
+                @else
+                  <form action="{{route('save_book',$books->id)}}" method="post">
+                  @csrf
+                <button class="btn btn-warning" style="width: 200px;">Guardar Libro</button>
+              </form>
+                @endif
+                <div class="col text-left">
+                  
 
                 </div>
             </div>  
@@ -93,8 +97,10 @@
             <img class="bookcover rounded mt-3" src="../{{$recom->img}}">  
         </div><br>
         <div class="container text-center mt-2 d-inline-block">
+          <!--
           <a class="title">{{$recom->title}} - </a>
             <a class="author" style="">{{$recom->author->first_name}} {{$recom->author->last_name}}</a>
+          -->
         </div>    
         
   </div>
