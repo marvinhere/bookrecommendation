@@ -213,8 +213,14 @@ public function editBookProfile(Request $request,$id){
             'data' => $id,
             'k'=>'5'
         ];
-
-        $response = Http::timeout(5)->get('http://127.0.0.1:5000/recommendation',$datarequest);
+		$random = rand(1,2);
+		$response = '';
+		if($random == 1){
+			$response = Http::timeout(5)->get('http://127.0.0.1:5000/recommendation-summary',$datarequest);
+		}if($random==2){
+			$response = Http::timeout(5)->get('http://127.0.0.1:5000/recommendation-cover',$datarequest);
+		}
+        
         $res = $response->serverError();
         $resuccess = $response->successful();
         $booksrecom = null;

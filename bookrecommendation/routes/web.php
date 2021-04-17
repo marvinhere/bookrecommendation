@@ -15,7 +15,7 @@ use App\Http\Controllers\UserDataRecommendation;
 |
 */
 
-Route::middleware(['auth:sanctum', 'verified'])->get('/', [UsersClient::class, 'home'])->name('principal');
+Route::middleware(['auth:sanctum', 'verified'])->get('/', [UsersClient::class, 'home'])->name('home1');
 
 
 Route::middleware(['auth:sanctum', 'verified'])->get('/home', [UsersClient::class, 'home'])->name('home');

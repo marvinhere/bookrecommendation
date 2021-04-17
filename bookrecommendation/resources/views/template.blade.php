@@ -107,7 +107,7 @@ a[data-toggle="collapse"] {
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <div class="navbar-nav mr-auto">
         <ul class="navbar-nav mr-auto">
-            <li class="nav-item {{ Route::currentRouteName() == 'home' ? 'active' : '' }}">
+            <li class="nav-item {{ Route::currentRouteName() == 'home' ? 'active' : '' }} {{Request::is('/') ? 'active' : '' }}">
                 <a class="nav-link" href="/home">Home</a>
             </li>
             <li class="nav-item {{ Route::currentRouteName() == 'library' ? 'active' : '' }}">
@@ -136,7 +136,7 @@ a[data-toggle="collapse"] {
         <ul class="list-unstyled components">
             <p style="font-size: 20px;"><strong>Tus opciones</strong></p>
 
-            <li class="{{Request::is('home') ? 'active' : '' }} {{Request::is('principal') ? 'active' : '' }}">
+            <li class="{{Request::is('home') ? 'active' : '' }} {{Request::is('/') ? 'active' : '' }}">
                 <a href="/">Home</a>
             </li>
             <li class="{{Request::is('genres/1') ? 'active' : '' }}">

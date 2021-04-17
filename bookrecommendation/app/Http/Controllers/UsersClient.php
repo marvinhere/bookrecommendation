@@ -36,7 +36,7 @@ class UsersClient extends Controller
             'k' =>'5'
         ];
 
-        $response = Http::timeout(5)->get('http://127.0.0.1:5000/recommendation',$datarequest);
+        $response = Http::timeout(5)->get('http://127.0.0.1:5000/recommendation-cover',$datarequest);
         //return $response;
         $res = $response->serverError();
         $resuccess = $response->successful();
