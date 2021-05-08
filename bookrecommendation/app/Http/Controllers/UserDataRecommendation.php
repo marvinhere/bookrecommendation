@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\books;
+use App\Models\interests;
 use Illuminate\Support\Facades\Auth;
 
 
@@ -29,7 +30,9 @@ class UserDataRecommendation extends Controller
     public function library(){
         $user = Auth::user();
         $userModel = User::find($user->id);
-        $interests = $userModel->interest;
+		//$interests = interests::orderBy('id','DESC')->get();
+        $interests = $userModel->interest->sortDesc();
+		
         $data = [
             "interests"=>$interests
         ];

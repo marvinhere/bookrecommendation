@@ -14,14 +14,16 @@ use App\Models\genres;
 use App\Models\publishers;
 use App\Models\User;
 use App\Models\interests;
+use App\Models\analytics;
 use Illuminate\Support\Facades\Auth;
-
+use Illuminate\Support\Facades\DB;
 
 
 class Dashboard extends Controller
 {
     //
     public function dashboard(){
+		
         $books = books::with("authors")->simplePaginate(20);
         $authors = authors::get();
     	$c_designs = c_designs::orderBy('name')->get();
@@ -39,7 +41,19 @@ class Dashboard extends Controller
 
 
     public function createNewBookProfile(Request $request){
-    	
+    	$validate = $request->validate([
+			'author'=>'required',
+			'title'=>'required',
+			'publisher'=>'required',
+			'summary'=>'required',
+			'total_pages'=>'required',
+			'isbn'=>'required',
+			'genre'=>'required',
+			'cover_design'=>'required',
+			'published_date'=>'required'
+		]);
+		try{
+		DB::transaction(function () use ($request){
     	$authorv = $request->author;
     	$publisherv = $request->publisher;
     	
@@ -61,7 +75,8 @@ class Dashboard extends Controller
 		//Guardar editorial
     	if($publisherv=='selectPublisher'){
     		$books->publisher_id =$request->publisher_selected;
-    	}else{
+    	}
+		if($request->publishername!=null){
     		$publisher = new publishers;
     		$publisher->name = $request->publishername;
     		$publisher->save();
@@ -77,11 +92,18 @@ class Dashboard extends Controller
     		//$author->book_id = $books->id;
             $bookc->authors()->attach($request->author_selected);
 
-    	}else{
+    	}
+		if($request->authorsname !=null && $request->authorslastname != null){
     		$newAuthor = new authors;
     		$newAuthor->first_name = $request->authorsname;
-    		$newAuthor->middle_name = $request->authorsmname;
-    		$newAuthor->last_name = $request->authorslastname;
+			$newAuthor->last_name = $request->authorslastname;
+			
+
+			if($request->authorsmname==null){
+				$newAuthor->middle_name = '-';
+			}else{
+				$newAuthor->middle_name = $request->authorsmname;
+			}
     		$newAuthor->save();
     		//$author->author_id = $newAuthor->id;
     		//$author->book_id = $books->id;
@@ -94,15 +116,36 @@ class Dashboard extends Controller
     	//Guardar cubierta
 
     	$bookc->covers()->attach($request->input('cover_design'));//se le pasa el diseno id
-
+		});
+		
+		 $datarequest = [
+            'apikey' => env("RECOMM_PRIVATE_KEY")
+        ];
+	
+		$response = Http::timeout(5)->get('http://127.0.0.1:5000/transform-cover',$datarequest);
+		$response = Http::timeout(5)->get('http://127.0.0.1:5000/transform-summary',$datarequest);
     	return redirect('dashboard')->with('status', 'Listo!');
+		
+		} catch (\Exception $e) {
+        return redirect('dashboard')->with('status', 'Error: Rellene todos los campos!');
+		}
 
     }
 
 
 public function editBookProfile(Request $request,$id){
     	
-    	
+		$validate = $request->validate([
+			'author'=>'required',
+			'title'=>'required',
+			'publisher'=>'required',
+			'summary'=>'required',
+			'total_pages'=>'required',
+			'isbn'=>'required',
+			'genre'=>'required',
+			'cover_design'=>'required'
+		]);
+    	DB::transaction(function () use ($request,$id){
         $authorv = $request->author;
         $publisherv = $request->publisher;
         
@@ -134,7 +177,8 @@ public function editBookProfile(Request $request,$id){
                 $bookc->publisher_id =$request->publisher_selected;
         
             
-        }else{
+        }
+		if($request->publishername!=null){
             $publisher = new publishers;
             $publisher->name = $request->publishername;
             $publisher->save();
@@ -145,17 +189,32 @@ public function editBookProfile(Request $request,$id){
         //Guardar autor
         //$bookc = books::find($books->id);
         //$author = new book_authors;
-        $bookc->authors()->detach();
+        
+		
         if ($authorv=='selectAuthor') {
+			$bookc->authors()->detach();
             //$author->author_id = $request->author_selected;
             //$author->book_id = $books->id;
+			
             $bookc->authors()->attach($request->author_selected);
 
-        }else{
+        }
+		if($request->authorsname !=null && $request->authorslastname != null){
+			
+			$bookc->authors()->detach();
             $newAuthor = new authors;
-            $newAuthor->first_name = $request->authorsname;
-            $newAuthor->middle_name = $request->authorsmname;
-            $newAuthor->last_name = $request->authorslastname;
+			
+			$newAuthor->first_name = $request->authorsname;
+			$newAuthor->last_name = $request->authorslastname;
+			
+
+			if($request->authorsmname==null){
+				$newAuthor->middle_name = '-';
+			}else{
+				$newAuthor->middle_name = $request->authorsmname;
+			}
+            
+            
             $newAuthor->save();
             //$author->author_id = $newAuthor->id;
             //$author->book_id = $books->id;
@@ -170,19 +229,35 @@ public function editBookProfile(Request $request,$id){
         $bookc->covers()->detach();
         $bookc->covers()->attach($request->input('cover_design'));//se le pasa el diseno id
 
+		});
+		$datarequest = [
+            'apikey' => env("RECOMM_PRIVATE_KEY")
+        ];
+	
+		$response = Http::timeout(5)->get('http://127.0.0.1:5000/transform-cover',$datarequest);
+		$response = Http::timeout(5)->get('http://127.0.0.1:5000/transform-summary',$datarequest);
         return back()->with('status', 'Listo!');
     }
 
 
-    public function profileBook($id){
+    public function profileBook(Request $request, $id){
+		
         $user = Auth::user();
-
+		/*
+		if($request->type!=null){
+			$this->saveAnalytics($user->id,$request->type);
+		}
+		*/
         $interest = interests::where('user_id',$user->id)
         ->where('book_id',$id)->first();
-
+		
+		$last_interested = interests::where('user_id',$user->id)->orderBy('id', 'DESC')->first();
+		//return $last_interested;
         $data = books::findOrFail($id);
         $books = books::findOrFail($id);
+		//
         $author = $books->authors()->get();
+		
         $cover = $books->covers()->get();
         $genre = $books->genres()->get();
         $selectedg = array();
@@ -207,12 +282,24 @@ public function editBookProfile(Request $request,$id){
         $genres = genres::orderBy('genre')->get();
         $publishers = publishers::get();
 
-         //recommendation only 4
-        $datarequest = [
-            'apikey' => 'abcd',
+         //recommendation only 5
+		$datarequest = "";
+		if($last_interested){
+			
+			$datarequest = [
+            'apikey' => env("RECOMM_PRIVATE_KEY"),
+            'data' => $last_interested->id,
+            'k'=>'5'
+        ];
+		}else{
+			
+			$datarequest = [
+            'apikey' => env("RECOMM_PRIVATE_KEY"),
             'data' => $id,
             'k'=>'5'
         ];
+		}
+        
 		$random = rand(1,2);
 		$response = '';
 		if($random == 1){
@@ -220,6 +307,8 @@ public function editBookProfile(Request $request,$id){
 		}if($random==2){
 			$response = Http::timeout(5)->get('http://127.0.0.1:5000/recommendation-cover',$datarequest);
 		}
+		$booksrecom = null;
+		
         
         $res = $response->serverError();
         $resuccess = $response->successful();
@@ -268,18 +357,35 @@ public function editBookProfile(Request $request,$id){
             'cover'=>$selectedc,
             'author'=>$author,
             'recoms'=>$booksrecom,
-            'interest'=>$interest
+            'interest'=>$interest,
+			'recom_type'=>'1'
         ];
         return view('book_profile')->with($data);
 
     }
+	
+	private function saveAnalytics($id,$type){
+		$anadata=[
+				'user_id'=>$id,
+				'recom_type'=>$type
+			];
+			$analytics = analytics::create($anadata);
+	}
 
     public function delete(Request $request){
+		DB::transaction(function () use ($request){
         $books = books::find($request->book_id);
         $books->genres()->detach();
         $books->authors()->detach();
         $books->covers()->detach();
         $books->delete();
+		});
+		 $datarequest = [
+            'apikey' => env("RECOMM_PRIVATE_KEY")
+        ];
+	
+		$response = Http::timeout(5)->get('http://127.0.0.1:5000/transform-cover',$datarequest);
+		$response = Http::timeout(5)->get('http://127.0.0.1:5000/transform-summary',$datarequest);
         return redirect('dashboard')->with('status', 'Libro eliminado!');
     }
 

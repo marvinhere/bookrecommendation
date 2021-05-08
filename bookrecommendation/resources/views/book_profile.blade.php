@@ -23,6 +23,17 @@
         {{ session('status') }}
     </div>
   @endif
+  
+@if($errors->any())
+	<div class="alert alert-danger">
+		<ul>
+			@foreach($errors->all() as $error)
+				<li>{{$error}}</li>
+			@endforeach
+		</ul>
+	</div>
+
+@endif
 
 
 @if(Auth::user()->type == 'admin')
@@ -91,7 +102,8 @@
   <h3 class="mb-2">Recomendados</h3>
    <div class="container-fluid text-center mt-5">
     @foreach($recoms as $recom)
-  <a href="{{route('book_profile',$recom->id)}}">
+  <!--<a href="{{route('book_profile',$recom->id)}}">-->
+  <a href="/profile/{{$recom->id}}?type={{$recom_type}}">
   <div class="container d-inline-block rounded" style="background-color: #fff; width: 15rem;">
     <div class="container text-center">
             <img class="bookcover rounded mt-3" src="../{{$recom->img}}">  

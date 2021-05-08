@@ -29,14 +29,23 @@ class UsersClient extends Controller
     		$i++;
 		}
 
-        //recommendation only 4
+        //recommendation only 5
+		$bookid = rand(1,30);
         $datarequest = [
-            'apikey' => 'abcd',
-            'data' => '8',
+            'apikey' => env("RECOMM_PRIVATE_KEY"),
+            'data' => $bookid,
             'k' =>'5'
         ];
-
-        $response = Http::timeout(5)->get('http://127.0.0.1:5000/recommendation-cover',$datarequest);
+		$response = '';
+		$random =  rand(1,2);
+		if($random==1){
+			$response = Http::timeout(5)->get('http://127.0.0.1:5000/recommendation-cover',$datarequest);
+		}
+		
+		if($random==2){
+			$response = Http::timeout(5)->get('http://127.0.0.1:5000/recommendation-summary',$datarequest);
+		}
+        
         //return $response;
         $res = $response->serverError();
         $resuccess = $response->successful();
@@ -109,7 +118,7 @@ class UsersClient extends Controller
 
     public function connectApis(){
         $datarequest = [
-            'apikey' => 'abcd',
+            'apikey' => env("RECOMM_PRIVATE_KEY"),
             'download' => '4',
             'history' =>'none'
         ];
@@ -128,7 +137,7 @@ class UsersClient extends Controller
 
     public function connectApi(){
         $datarequest = [
-            'apikey' => 'abcd',
+            'apikey' => env("RECOMM_PRIVATE_KEY"),
             'download' => '3',
             'history' =>'none'
         ];

@@ -5,7 +5,7 @@ import numpy as np
 #import operator
 import mysql.connector as sql
 from flask import request, jsonify
-from operations import *
+#from operations import *
 import joblib
 import json
 import array as arr
@@ -17,7 +17,7 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 app = flask.Flask(__name__)
-app.config["DEBUG"] = True
+app.config["DEBUG"] = False
 
 # Create some test data for our catalog in the form of a list of dictionaries.
 
@@ -57,7 +57,7 @@ def api():
         message =['Error']
         return jsonify(message)
 
-@app.route('/recommendation',methods=['GET'])
+@app.route('/recommendation-cover',methods=['GET'])
 def recommendations():
     apikey = request.args.get('apikey')
     data_test_id = request.args.get('data')
@@ -74,15 +74,15 @@ def recommendations():
 @app.route('/recommendation-summary',methods=['GET'])
 def recomsummary():
     apikey = request.args.get('apikey')
-    data = request.args.get('data')
+    data_test_id = request.args.get('data')
     k = request.args.get('k')
     if apikey == 'abcd':
-        if data=='none':
+        if data_test_id=='none':
             abort(404)
         else:
             vectorizer = joblib.load("vector-summary.pkl")
             ids_data = joblib.load("ids.pkl")
-            recom = getRecommendations(ids_data,vectorizer,data,k)
+            recom = recommend.getRecommendations(ids_data,vectorizer,data_test_id,int(k))
             return jsonify(recom)
 
 @app.route('/transform-summary',methods=['GET'])
@@ -100,7 +100,7 @@ def apisummary():
         #df['cover'] = getImportantFeatures(df)
         stop_words = frozenset(["a", "ante","bajo","con","de","desde","durante","hacia","hasta","por","para"])
         #data = dataVectorized(df['summary'],'array')
-        data = dataVectorizedSummary(df['summary'],stop_words)
+        data = recommend.dataVectorizedSummary(df['summary'],stop_words)
         #data = df['cover'].head().to_html()
         joblib.dump(data, "vector-summary.pkl")
         message =['Ok']
@@ -109,4 +109,4 @@ def apisummary():
         message =['Error']
         return jsonify(message)
 
-app.run()
+app.run(host='0.0.0.0', port=5000)

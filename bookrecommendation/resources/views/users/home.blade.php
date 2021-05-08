@@ -72,20 +72,7 @@
                		<button type="button" class="btn btn-warning btn-sm mt-1">{{$genre->genre}}</button>
                		@endforeach
                 </div>
-                <div class="container mt-4 col">
-                  <div class="row mb-3">
-                    <img class="reaction mr-2" src="https://img.icons8.com/flat_round/64/000000/filled-like.png"/><a>0</a>
-                  </div>
-
-                  <div class="row mb-3">
-                    <img class="reaction mr-2" src="https://img.icons8.com/ios/50/000000/facebook-like--v1.png"/><a>0</a>
-                  </div>
-                  <div class="row mb-3">
-                    <img class="reaction mr-2" src="https://img.icons8.com/material-outlined/50/000000/thumbs-down.png"/><a>0</a>
-                  </div>
-                    
-
-                </div>
+                
             </div>  
           </div>
               
@@ -103,7 +90,8 @@
   <h3 class="mb-2">Recomendados</h3>
   <div class="container-fluid text-center mt-5">
     @foreach($recoms as $recom)
-  <a href="{{route('book_profile',$recom->id)}}">
+  <!--<a href="{{route('book_profile',$recom->id)}}">-->
+	<a href="/profile/{{$recom->id}}">
   <div class="container d-inline-block rounded" style="background-color: #fff; width: 15rem;">
     <div class="container text-center">
             <img class="bookcover rounded mt-3" src="{{$recom->img}}">  
@@ -120,7 +108,9 @@
 
 
 </div>
+<!-- Cookies Alert
 <x-data-alert/>
+-->
 <script type="text/javascript">
   $(document).ready(function() {  
   $('#cookieModal').modal('show');

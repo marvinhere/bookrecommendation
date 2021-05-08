@@ -56,14 +56,30 @@
 }
 
 </style>
+
+
+	@if($errors->any())
+	<div class="mt-5 alert alert-danger">
+		<ul>
+			@foreach($errors->all() as $error)
+				<li>{{$error}}</li>
+			@endforeach
+		</ul>
+	</div>
+
+@endif
+
 <div class="container-fluid mt-5">
-  @if (session('status'))
+ 
+    
+    <h1>Dashboard<h1>
+	 @if (session('status'))
     <div class="alert alert-success">
         {{ session('status') }}
     </div>
   @endif
-    
-    <h1>Dashboard<h1>
+  
+  
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
         Nuevo documento
     </button>
@@ -255,14 +271,11 @@
             
            
             
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="submit" class="btn btn-primary">Crear</button>
         </form>
 
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-      </div>
+ 
     </div>
   </div>
 </div>
