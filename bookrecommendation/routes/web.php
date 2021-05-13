@@ -38,4 +38,6 @@ Route::middleware(['auth:sanctum', 'verified'])->post('/remove_book/{id}',[UserD
 
 Route::middleware(['auth:sanctum', 'verified'])->get('/genres/{id}',[UsersClient::class,'genreSearch']);
 
-Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', [Dashboard::class, 'dashboard'])->name('dashboard')->middleware('admin');;
+Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', [Dashboard::class, 'dashboard'])->name('dashboard')->middleware('admin');
+
+Route::middleware(['auth:sanctum', 'verified'])->get('/info', [UsersClient::class, 'info'])->name('info');

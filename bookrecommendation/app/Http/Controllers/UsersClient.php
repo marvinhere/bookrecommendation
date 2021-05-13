@@ -175,6 +175,10 @@ class UsersClient extends Controller
 
         return view('genre')->with($data);
     }
+	
+	public function info(){
+		return view('info');
+	}
     
 
 }

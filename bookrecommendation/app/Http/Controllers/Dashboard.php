@@ -250,8 +250,12 @@ public function editBookProfile(Request $request,$id){
 		*/
         $interest = interests::where('user_id',$user->id)
         ->where('book_id',$id)->first();
+		//$all_intesrests = interests::select(DB::raw('COUNT(id) as interests'))->where('user_id',$user->id)->first();
 		
-		$last_interested = interests::where('user_id',$user->id)->orderBy('id', 'DESC')->first();
+		$all_intesrests = interests::where('user_id',$user->id)->orderBy('id', 'DESC')->limit(5)->get();
+		
+		
+		//$last_interested = interests::where('user_id',$user->id)->orderBy('id', 'DESC')->first();
 		//return $last_interested;
         $data = books::findOrFail($id);
         $books = books::findOrFail($id);
@@ -281,14 +285,16 @@ public function editBookProfile(Request $request,$id){
         $c_designs = c_designs::orderBy('name')->get();
         $genres = genres::orderBy('genre')->get();
         $publishers = publishers::get();
-
+	
          //recommendation only 5
 		$datarequest = "";
-		if($last_interested){
+		if($all_intesrests->count()>0){
 			
+			$random = rand(1,$all_intesrests->count());
+			 
 			$datarequest = [
             'apikey' => env("RECOMM_PRIVATE_KEY"),
-            'data' => $last_interested->id,
+            'data' => $all_intesrests[$random-1]->id,
             'k'=>'5'
         ];
 		}else{
@@ -322,6 +328,7 @@ public function editBookProfile(Request $request,$id){
                 $a++;
             }
         }
+		
         if($resuccess){
 
             $data = json_decode($response);

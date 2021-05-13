@@ -37,6 +37,9 @@
 
 
 @if(Auth::user()->type == 'admin')
+<div class="alert alert-warning">
+	Nota UVG: La eliminación de los libros podría afectar la evaluación de este sistema a otros evaluadores del trabajo de graduación. Puede eliminar los libros pero el sistema se quedaría sin libros.
+</div>
 <div class="container mt-2">
     <button type="button" class="btn btn-primary mr-2 d-inline-block" data-toggle="modal" data-target="#exampleModal">
       Editar

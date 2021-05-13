@@ -113,6 +113,14 @@ a[data-toggle="collapse"] {
             <li class="nav-item {{ Route::currentRouteName() == 'library' ? 'active' : '' }}">
                 <a class="nav-link" href="/library">Mi Biblioteca</a>
             </li>
+			@if(Auth::user()->type == 'admin')
+				<li class="nav-item {{ Route::currentRouteName() == 'dashboard' ? 'active' : '' }}">
+					<a class="nav-link" href="/dashboard">Dashboard</a>
+				</li>
+			@endif
+			<li class="nav-item {{ Route::currentRouteName() == 'info' ? 'active' : '' }}">
+					<a class="nav-link" href="/info">Info</a>
+			</li>
         </ul>
     </div>
     
