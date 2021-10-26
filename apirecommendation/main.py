@@ -25,7 +25,7 @@ app.config["DEBUG"] = False
 @app.route('/', methods=['GET'])
 def home():
     return '''<h1>Distant Reading Archive</h1>
-<p>A prototype API for distant reading of science fiction novels.</p>'''
+<p></p>'''
 
 
 # A route to return all of the available entries in our catalog.
